@@ -8,7 +8,7 @@ contract Token is ERC20 {
   address public minter;
 
   //add minter changed event
-  event MinterChanged(address indexed from, address to)
+  event MinterChanged(address indexed from, address to);
 
   constructor() public payable ERC20("Decentralized Curreny Bank", "DCB") {
     //asign initial minter
@@ -16,9 +16,9 @@ contract Token is ERC20 {
   }
 
   //Add pass minter role function
-  function passMinterRole(address dbank) ublic return (bool) {
+  function passMinterRole(address dBank) public returns (bool) {
     require(msg.sender == minter, "Error, Only wner can change pass minter role");
-    mintr = dBank;
+    minter = dBank;
 
     emit MinterChanged(msg.sender, dBank);
     return true;
