@@ -15,7 +15,35 @@ class App extends Component {
   }
 
   async loadBlockchainData(dispatch) {
+    if(typeof window.ethereum !== 'undefined'){
+      const web3 = new Web3(window.ethereum)
+      const netId = await web3.eth.net.getId()
+      const accounts = web3.eth.getAccounts()
 
+      if(typeof accounts[0] !== 'undefined'){
+        const balance = await web3.eth.getBalance(accounts[0])
+        this.setState({ account: accounts[0], balance: balance, web3: web3 })
+      } else {
+        window.alert('Please login with MetaMask')
+      }
+
+
+      try {
+        const token = new web3.eth.Contract(Token.abi, Token.networks[netId].address)
+        const dbank = new web3.eth.Contract(dBank.abi, dBank.networks[netId].address)
+        const dBankAddress = dBank.networks[netId].address
+        this.setState({token: token, dbank: dbank, dBankAddress: dBankAddress})
+        console.log(dBankAddress)
+      } catch (e) {
+        console.log('Error : ', e)
+        window.alert('Contracts not deployed to current network')
+      }
+
+
+    } else {
+      window.alert('Please install MetaMask')
+    }
+    
     //check if MetaMask exists
 
       //assign to values to variables: web3, netId, accounts
@@ -66,8 +94,8 @@ class App extends Component {
         </nav>
         <div className="container-fluid mt-5 text-center">
         <br></br>
-          <h1>{/*add welcome msg*/}</h1>
-          <h2>{/*add user address*/}</h2>
+          <h1>Welcome to dBank</h1>
+          <h2>{this.state.account}</h2>
           <br></br>
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
